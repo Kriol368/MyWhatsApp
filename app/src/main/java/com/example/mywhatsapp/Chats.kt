@@ -2,6 +2,7 @@ package com.example.mywhatsapp
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -15,16 +16,23 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -39,7 +47,6 @@ data class Contact(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatsTab(scrollBehavior: TopAppBarScrollBehavior) {
-    val defaultImageRes = android.R.drawable.ic_menu_gallery
 
     val contacts = listOf(
         Contact("Jefe de departamento", "Departamento Informática", R.drawable.image1),
@@ -71,7 +78,50 @@ fun ChatsTab(scrollBehavior: TopAppBarScrollBehavior) {
             }
 
             items(groupContacts) { contact ->
-                ContactItem(contact = contact)
+                var showMenu by remember { mutableStateOf(false) }
+
+                Box(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    ContactItem(
+                        contact = contact,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .pointerInput(Unit) {
+                                detectTapGestures(
+                                    onLongPress = {
+                                        showMenu = true
+                                    }
+                                )
+                            }
+                    )
+
+                    DropdownMenu(
+                        expanded = showMenu,
+                        onDismissRequest = { showMenu = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("Salir del grupo") },
+                            onClick = {
+                                showMenu = false
+                            }
+                        )
+
+                        DropdownMenuItem(
+                            text = { Text("Info. grupo") },
+                            onClick = {
+                                showMenu = false
+                            }
+                        )
+
+                        DropdownMenuItem(
+                            text = { Text("Crear acceso directo") },
+                            onClick = {
+                                showMenu = false
+                            }
+                        )
+                    }
+                }
             }
         }
     }
@@ -95,9 +145,9 @@ fun GroupHeader(group: String) {
 }
 
 @Composable
-fun ContactItem(contact: Contact) {
+fun ContactItem(contact: Contact, modifier: Modifier = Modifier) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
