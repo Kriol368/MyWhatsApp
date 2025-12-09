@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/sad_face">
+
+    <target
+        android:name="mouth"
+        android:animation="@animator/sad_to_happy" />
+
+    <target
+        android:name="left_eye"
+        android:animation="@animator/left_eye_open_to_closed" />
+
+    <target
+        android:name="right_eye"
+        android:animation="@animator/right_eye_open_to_closed" />
+
+</animated-vector>
